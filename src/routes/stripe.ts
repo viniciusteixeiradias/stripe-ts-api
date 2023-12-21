@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { StripeDao } from "../daos/stripe";
+import { checkJwt } from "../middleware/token";
 
 const router = Router()
 
@@ -16,7 +17,11 @@ router.get('/connectionToken', async (_, res: Response) => {
   res.json(token);
 });
 
-router.post('/createPaymentIntent', async (req: Request<{}, {}, PaymentIntent>, res: Response) => {
+router.get('/auth', checkJwt, async (_, res: Response) => {
+  res.json({ message: "You are authenticated!" });
+});
+
+router.post('/createPaymentIntent', checkJwt, async (req: Request<{}, {}, PaymentIntent>, res: Response) => {
   const paymentIntent = req.body;
   const stripeDao = new StripeDao();
   const response = await stripeDao.createPaymentIntent(paymentIntent);
@@ -24,7 +29,7 @@ router.post('/createPaymentIntent', async (req: Request<{}, {}, PaymentIntent>, 
   res.json(response);
 });
 
-router.post('/capturePaymentIntent', async (req: Request<{}, {}, { paymentId: string }>, res: Response) => {
+router.post('/capturePaymentIntent', checkJwt, async (req: Request<{}, {}, { paymentId: string }>, res: Response) => {
   const { paymentId } = req.body;
   const stripeDao = new StripeDao();
   await stripeDao.capturePaymentIntent(paymentId);
