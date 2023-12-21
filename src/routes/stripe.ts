@@ -10,15 +10,16 @@ interface PaymentIntent {
   statement_descriptor: string;
 }
 
+/* Endpoint for TEST Auth */
+router.get('/auth', checkJwt, async (_, res: Response) => {
+  res.json({ message: "You are authenticated!" });
+});
+
 router.get('/connectionToken', async (_, res: Response) => {
   const stripeDao = new StripeDao();
   const token = await stripeDao.getToken();
 
   res.json(token);
-});
-
-router.get('/auth', checkJwt, async (_, res: Response) => {
-  res.json({ message: "You are authenticated!" });
 });
 
 router.post('/createPaymentIntent', checkJwt, async (req: Request<{}, {}, PaymentIntent>, res: Response) => {

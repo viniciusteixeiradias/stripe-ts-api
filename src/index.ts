@@ -1,4 +1,3 @@
-import { readFileSync } from "fs";
 import express from 'express';
 import bodyParser from 'body-parser';
 
@@ -9,15 +8,6 @@ const app = express();
 const port = process.env.PORT;
 
 import jwt from "jsonwebtoken";
-
-const payload = {
-	user: "Vinicius",
-	company: "Foodinn",
-	aud: "http://localhost/3000"
-}
-
-const token = jwt.sign(payload, process.env.SECRET!)
-console.log(token)
 
 app.use(bodyParser.json());
 
@@ -30,3 +20,14 @@ app.use("/stripe", stripeRoutes)
 app.listen(port, () => {
   console.info('Running on port ', port)
 });
+
+/* Token for TEST API */
+const payload = {
+	user: "Vinicius",
+	company: "Foodinn",
+	aud: "http://localhost/3000"
+}
+
+const token = jwt.sign(payload, process.env.SECRET!)
+console.log(token)
+
